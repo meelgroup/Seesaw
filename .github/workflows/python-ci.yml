@@ -1,0 +1,49 @@
+name: Python CI
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke-checks:
+    name: Smoke Checks (${{ matrix.os }}, Python ${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Show Python version
+        run: python --version
+
+      - name: Compile Python sources
+        run: python -m compileall src examples generator
+
+      - name: Validate workflow source files exist
+        run: |
+          test -f src/satire+.py
+          test -f README.md
+
+      - name: Note runtime dependency gap
+        run: |
+          echo "Skipping full Seesaw execution in CI."
+          echo "The runtime imports gelpia at module import time, so a reliable"
+          echo "end-to-end Action needs the external gelpia toolchain standardized"
+          echo "for GitHub-hosted runners first."
