@@ -264,11 +264,13 @@ if __name__ == "__main__":
 	logger = logging.getLogger()
 
 	##-------- Check if realpaver is available -----------------
-	Globals.ROOT_DIR = os.getenv("SAT_ROOT")
-	assert ( os.path.isdir(Globals.ROOT_DIR) )
+	default_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+	sat_root = os.getenv("SAT_ROOT")
+	Globals.ROOT_DIR = sat_root if sat_root and os.path.isdir(sat_root) else default_root
 	if argList.realpaver:
-		Globals.LIBFILE = Globals.ROOT_DIR+"/RL1/build/"+"libsatrp.so"
-		assert ( os.path.isfile(Globals.LIBFILE) )
+		Globals.LIBFILE = os.path.join(Globals.ROOT_DIR, "RL1", "build", "libsatrp.so")
+		assert os.path.isfile(Globals.LIBFILE), \
+			"RealPaver requested, but RL1/build/libsatrp.so was not found under SAT_ROOT or the repo root"
 
 
 
@@ -365,5 +367,4 @@ if __name__ == "__main__":
 	print("Printing sorted instability list:")
 	for i in range(len(D)):
 		print("Pred:{pred}\t instab:{instab}".format(pred=D[i][2], instab=D[i][0]))
-
 
