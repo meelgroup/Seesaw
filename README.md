@@ -19,8 +19,17 @@ python3 src/satire+.py --help
 python3 src/satire+.py --std --file tests/smartRoot.txt
 ```
 
-If `gelpia` is not already installed, build it first by following the Gelpia README, then make sure
-its `bin` directory is available on `PATH`.
+If `gelpia` is not already installed, clone and build it first:
+
+```bash
+git clone https://github.com/meelgroup/gelpia.git
+cd gelpia
+git switch seesaw-depend
+make requirements
+make
+export PATH="$PWD/bin:$PATH"
+cd ../Seesaw
+```
 
 # Dependencies
 
@@ -34,7 +43,9 @@ Satire requires the following softwares to be installed.
 		* [sympy](https://www.sympy.org/en/index.html) > 1.4
 		* [bigfloat](https://pypi.org/project/bigfloat) > 0.4.0
 		* [numpy](https://numpy.org/)
-	* [gelpia](https://github.com/soarlab/gelpia) (branch: constraints. working commit ID: 2ee03ee7a59f117f0fe92d41e5ad6492203d27f6)
+	* [gelpia](https://github.com/meelgroup/gelpia)
+		* Clone the `seesaw-depend` branch
+		* Build with `make`
 		* After installation, make `gelpia/bin` available in `$PATH`
 	* Optional:
 		* RealPaver support via `RL1/build/libsatrp.so` for `--realpaver`
